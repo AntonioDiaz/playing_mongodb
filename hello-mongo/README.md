@@ -33,7 +33,7 @@ __pom.xml__
 
 __application.properties__
 ````properties
-spring.data.mongodb.uri=mongodb+srv://mongo_user:password_22@antonio-diaz-arroyo-clu.mj7kznv.mongodb.net/?retryWrites=true&w=majority
+spring.data.mongodb.uri=mongodb+srv://mongo_user:xxxxx@antonio-diaz-arroyo-clu.mj7kznv.mongodb.net/?retryWrites=true&w=majority
 spring.data.mongodb.database=mygrocerylist
 ````
 
