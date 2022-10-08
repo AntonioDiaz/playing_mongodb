@@ -16,9 +16,12 @@ Annotations:
 @Document("groceryitems")
 @EnableMongoRepositories
 
+### MongoDB Atlas
+<img width="686" alt="hello_world_01" src="https://user-images.githubusercontent.com/725743/194713472-38fa9c28-b0b7-4afc-aaa5-8ea555488c11.png">
+
 --  
 ### Files
-
+<img width="454" alt="hello_world_02" src="https://user-images.githubusercontent.com/725743/194713508-4f405b51-9a36-467b-aedf-73218aedccc3.png">
 __pom.xml__
 ````xml
 <dependency>
