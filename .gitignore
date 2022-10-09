@@ -1,1 +1,6 @@
-.history
+.history/
+target/
+.idea/
+build/
+.classpath
+.project
