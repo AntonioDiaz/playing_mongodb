@@ -2,16 +2,5 @@
 —
 
 https://www.mongodb.com/compatibility/spring-boot
+https://university.mongodb.com/courses/M220J/about
 
-
-
-__Concepts:__
-
-MongoTemplate       ->   
-MongoRepository     ->   
-BSON                -> object in MongoDB  
-MongoDB Atlas       -> https://www.mongodb.com/atlas/database
-
-Annotations:  
-@Document("groceryitems")
-@EnableMongoRepositories
