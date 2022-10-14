@@ -301,7 +301,26 @@ public void testWriteOneDocument() {
 ```  
 ## Updates
  1. You can replace entire documents with __replaceOne__. This operation may cause you to lose data, so it isn't recommended for situations when you need a simple update.  
-<script src="https://gist.github.com/AntonioDiaz/331939b6add3025a2126e8195842efbf.js"></script>
+```java
+  @Test
+  public void testReplaceDocument() {
+    MongoCollection<Document> artists = testDb.getCollection("artists");
+    Bson queryFilter = new Document("_id", band1Id);
+    Document myBand = artists.find(queryFilter).iterator().tryNext();
+    Assert.assertEquals(
+        "Make sure that the band created in the database is"
+            + " the same as the band retrieved from the database",
+        bandOne,
+        myBand);
+    Document replaceBand = new Document();
+    replaceBand.append("title", "Gorillaz");
+    artists.replaceOne(eq("_id", band1Id), replaceBand);
+    Document myNewBand = artists.find(queryFilter).iterator().tryNext();
+    Assert.assertEquals(myNewBand.get("_id"), band1Id);
+    Assert.assertEquals(myNewBand.get("title"), "Gorillaz");
+    Assert.assertNull(myNewBand.get("num_albums"));
+  }
+```
 
  2. You can update a value in a single document using the __updateOne__ and __set__ or __inc__ operators.
 
