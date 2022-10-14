@@ -5,6 +5,7 @@ import com.mongodb.MongoWriteException;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import java.text.MessageFormat;
 import java.util.Map;
 
+import static com.mongodb.client.model.Filters.all;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
@@ -31,9 +33,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class UserDao extends AbstractMFlixDao {
 
     private final MongoCollection<User> usersCollection;
-    //TODO> Ticket: User Management - do the necessary changes so that the sessions collection
-    //returns a Session object
-    private final MongoCollection<Document> sessionsCollection;
+    private final MongoCollection<Session> sessionsCollection;
 
     private final Logger log;
 
@@ -48,9 +48,7 @@ public class UserDao extends AbstractMFlixDao {
 
         usersCollection = db.getCollection("users", User.class).withCodecRegistry(pojoCodecRegistry);
         log = LoggerFactory.getLogger(this.getClass());
-        //TODO> Ticket: User Management - implement the necessary changes so that the sessions
-        // collection returns a Session objects instead of Document objects.
-        sessionsCollection = db.getCollection("sessions");
+        sessionsCollection =  db.getCollection("sessions", Session.class).withCodecRegistry(pojoCodecRegistry);
     }
 
     /**
@@ -78,9 +76,17 @@ public class UserDao extends AbstractMFlixDao {
     public boolean createUserSession(String userId, String jwt) {
         //TODO> Ticket: User Management - implement the method that allows session information to be
         // stored in it's designated collection.
-        return false;
+        //return false;
         //TODO > Ticket: Handling Errors - implement a safeguard against
         // creating a session with the same jwt token.
+        Session session = new Session();
+        session.setUserId(userId);
+        session.setJwt(jwt);
+        if (sessionsCollection.countDocuments(all("jwt", jwt))==0) {
+            sessionsCollection.insertOne(session);
+        }
+        return true;
+
     }
 
     /**
@@ -90,9 +96,7 @@ public class UserDao extends AbstractMFlixDao {
      * @return User object or null.
      */
     public User getUser(String email) {
-        User user = null;
-        //TODO> Ticket: User Management - implement the query that returns the first User object.
-        return user;
+        return usersCollection.find(Filters.eq("email", email)).iterator().tryNext();
     }
 
     /**
@@ -102,14 +106,12 @@ public class UserDao extends AbstractMFlixDao {
      * @return Session object or null.
      */
     public Session getUserSession(String userId) {
-        //TODO> Ticket: User Management - implement the method that returns Sessions for a given
-        // userId
-        return null;
+        return sessionsCollection.find(Filters.eq("user_id", userId)).iterator().tryNext();
     }
 
     public boolean deleteUserSessions(String userId) {
-        //TODO> Ticket: User Management - implement the delete user sessions method
-        return false;
+        DeleteResult deleteResult = sessionsCollection.deleteOne(Filters.eq("user_id", userId));
+        return deleteResult.getDeletedCount()>0;
     }
 
     /**
@@ -120,10 +122,12 @@ public class UserDao extends AbstractMFlixDao {
      */
     public boolean deleteUser(String email) {
         // remove user sessions
+        DeleteResult deleteResult = usersCollection.deleteMany(Filters.eq("email", email));
         //TODO> Ticket: User Management - implement the delete user method
         //TODO > Ticket: Handling Errors - make this method more robust by
         // handling potential exceptions.
-        return false;
+        deleteUserSessions(email);
+        return deleteResult.getDeletedCount()>0;
     }
 
     /**

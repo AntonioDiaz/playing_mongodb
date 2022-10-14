@@ -22,6 +22,10 @@ public class MovieController extends ApiController {
     @Value("${api.movies.movies_per_page}")
     private int MOVIES_PER_PAGE = 20;
 
+
+    @Value("${spring.mongodb.uri}")
+    private String uri;
+
     public MovieController() {
         super();
     }

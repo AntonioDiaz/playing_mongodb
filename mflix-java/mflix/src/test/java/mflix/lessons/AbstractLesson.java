@@ -15,7 +15,9 @@ public abstract class AbstractLesson extends TicketTest {
 
   public AbstractLesson() {
     try {
-      String mongoUri = getProperty("spring.mongodb.uri");
+      String mongoUri = getProperty("spring.mongodb.uri")
+              .replaceAll("\\$\\{MY_MONGO_USER\\}", System.getenv("MY_MONGO_USER"))
+              .replaceAll("\\$\\{MY_MONGO_PASSWORD\\}", System.getenv("MY_MONGO_PASSWORD"));
       String databaseName = getProperty("spring.mongodb.database");
       db = MongoClients.create(mongoUri).getDatabase(databaseName);
       moviesCollection = db.getCollection("movies");

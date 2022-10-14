@@ -179,6 +179,7 @@ public class BasicWrites extends AbstractLesson {
 
     // in this case both our number of modified count
     Assert.assertEquals(0, resultWithUpsert.getModifiedCount());
+
     // should be still 0 given that there was no document in the
     // collection, however we do have a upsertId as result of the insert
     Assert.assertNotNull(resultWithUpsert.getUpsertedId());

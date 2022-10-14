@@ -109,7 +109,7 @@ public class MoviesService {
     /**
      * Collects the list of movies that match the Text search for the provided filter.
      *
-     * @param resultsPerPage - max number of results per page
+     * @param resultsPerPage - max number of results per pageç
      * @param page           - wanted page number
      * @param filter         - List of keywords to be matched
      * @return Map containing the movies array and total results matching filter criteria.

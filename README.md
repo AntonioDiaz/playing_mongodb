@@ -1,5 +1,6 @@
 # Mongo DB & Spring Boot
 —
+<h2> Contents </h2>  
 
 - [Links](#links)
 - [Notes](#notes)
@@ -10,7 +11,8 @@
   - [Default Codec](#default-codec)
   - [CustomCodec](#customcodec)
 - [Aggregation](#aggregation)
-- [Basic Writes](#basic-writes)
+- [Writes](#writes)
+- [Updates](#updates)
 
 ## Links  
 https://www.mongodb.com/compatibility/spring-boot
@@ -239,8 +241,73 @@ public void singleStageAggregation() {
   }
 ```
 
-## Basic Writes
+## Writes
 - We can insert new documents using both the __insertOne__ or __insertMany__ collection methods. 
 - Update using the __$ flag set to true also allows us to insert new documents.
 - Using __$setOnInsert__ update operator provides a way to set specific fields only in the case of insert.
 
+* Example __insertOne__
+```java
+@Test
+public void testWriteOneDocument() {
+  Document doc = new Document("title", "Fortnite");
+  doc.append("year", 2018);
+  doc.put("label", "Epic Games");
+  videoGames.insertOne(doc);
+  Assert.assertNotNull(doc.getObjectId("_id"));
+  Document retrieved = videoGames.find(Filters.eq("_id", doc.getObjectId("_id"))).first();
+  Assert.assertEquals(retrieved, doc);
+}
+```
+
+* Example __$setOnInsert__
+```java
+  @Test
+  public void testUpsertDocument() {
+    Document doc1 = new Document("title", "Final Fantasy");
+    doc1.put("year", 2003);
+    doc1.put("label", "Square Enix");
+    Bson query = new Document("title", "Final Fantasy");
+    UpdateResult resultNoUpsert = videoGames.updateOne(query, new Document("$set", doc1));
+    Assert.assertEquals(0, resultNoUpsert.getMatchedCount());
+    Assert.assertNotEquals(1, resultNoUpsert.getModifiedCount());
+    UpdateOptions options = new UpdateOptions();
+    options.upsert(true);
+    UpdateResult resultWithUpsert =
+        videoGames.updateOne(query, new Document("$set", doc1), options);
+    Assert.assertEquals(0, resultWithUpsert.getModifiedCount());
+    Assert.assertNotNull(resultWithUpsert.getUpsertedId());
+    Assert.assertTrue(resultWithUpsert.getUpsertedId().isObjectId());
+    Bson updateObj1 =
+        Updates.combine(
+            Updates.set("title", "Final Fantasy 1"), Updates.setOnInsert("just_inserted", "yes"));
+    query = Filters.eq("title", "Final Fantasy");
+    UpdateResult updateAlreadyExisting = videoGames.updateOne(query, updateObj1, options);
+    Document finalFantasyRetrieved =
+        videoGames.find(Filters.eq("title", "Final Fantasy 1")).first();
+    Assert.assertFalse(finalFantasyRetrieved.keySet().contains("just_inserted"));
+    Document doc2 = new Document("title", "CS:GO");
+    doc2.put("year", 2018);
+    doc2.put("label", "Source");
+    Document updateObj2 = new Document();
+    updateObj2.put("$set", doc2);
+    updateObj2.put("$setOnInsert", new Document("just_inserted", "yes"));
+    UpdateResult newDocumentUpsertResult =
+        videoGames.updateOne(Filters.eq("title", "CS:GO"), updateObj2, options);
+    Bson queryInsertedDocument = new Document("_id", newDocumentUpsertResult.getUpsertedId());
+    Document csgoDocument = videoGames.find(queryInsertedDocument).first();
+    Assert.assertEquals("yes", csgoDocument.get("just_inserted"));
+  }
+```  
+## Updates
+ 1. You can replace entire documents with __replaceOne__. This operation may cause you to lose data, so it isn't recommended for situations when you need a simple update.  
+<script src="https://gist.github.com/AntonioDiaz/331939b6add3025a2126e8195842efbf.js"></script>
+
+ 2. You can update a value in a single document using the __updateOne__ and __set__ or __inc__ operators.
+
+ 3. You can update multiple documents that match your query using updateMany in conjunction with set or inc operations.
+
+ 4. You can completely remove a field from a document by using updateOne or updateMany with the unset operation.
+
+ For more update operators and their use cases, feel free to check out the following documentation page:  
+ http://mongodb.github.io/mongo-java-driver/3.8/driver/tutorials/perform-write-operations/
