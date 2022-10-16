@@ -26,6 +26,7 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 import static com.mongodb.client.model.Filters.all;
+import static com.mongodb.client.model.Updates.set;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
@@ -33,6 +34,7 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 public class UserDao extends AbstractMFlixDao {
 
     private final MongoCollection<User> usersCollection;
+    private final MongoCollection<Document> usersDocumentCollection;
     private final MongoCollection<Session> sessionsCollection;
 
     private final Logger log;
@@ -49,6 +51,7 @@ public class UserDao extends AbstractMFlixDao {
         usersCollection = db.getCollection("users", User.class).withCodecRegistry(pojoCodecRegistry);
         log = LoggerFactory.getLogger(this.getClass());
         sessionsCollection =  db.getCollection("sessions", Session.class).withCodecRegistry(pojoCodecRegistry);
+        usersDocumentCollection = db.getCollection("users");
     }
 
     /**
@@ -82,7 +85,9 @@ public class UserDao extends AbstractMFlixDao {
         Session session = new Session();
         session.setUserId(userId);
         session.setJwt(jwt);
-        if (sessionsCollection.countDocuments(all("jwt", jwt))==0) {
+        if (sessionsCollection.find(all("user_id", userId)).iterator().tryNext()!=null) {
+            sessionsCollection.updateOne(Filters.eq("user_id", userId), Updates.set("jwt", jwt));
+        } else {
             sessionsCollection.insertOne(session);
         }
         return true;
@@ -141,6 +146,16 @@ public class UserDao extends AbstractMFlixDao {
     public boolean updateUserPreferences(String email, Map<String, ?> userPreferences) {
         //TODO> Ticket: User Preferences - implement the method that allows for user preferences to
         // be updated.
+
+        if (userPreferences == null) {
+            throw new IncorrectDaoOperation("Preferences can not be null");
+        }
+        Bson queryFilter = new Document("email", email);
+        Document userDocument = usersDocumentCollection.find(queryFilter).iterator().tryNext();
+        if (userDocument != null) {
+            usersCollection.updateOne(userDocument, set("preferences", userPreferences));
+            return true;
+        }
         //TODO > Ticket: Handling Errors - make this method more robust by
         // handling potential exceptions when updating an entry.
         return false;

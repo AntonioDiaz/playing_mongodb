@@ -323,6 +323,20 @@ public void testWriteOneDocument() {
 ```
 
  2. You can update a value in a single document using the __updateOne__ and __set__ or __inc__ operators.
+```java
+  @Test
+  public void testSetFieldValueForOneDocument() {
+    MongoCollection<Document> artists = testDb.getCollection("artists");
+    Bson queryFilter = new Document("_id", band1Id);
+    Document wrongBandName = artists.find(queryFilter).iterator().tryNext();
+    Assert.assertEquals(wrongBandName.get("title"), "Gorillazz");
+    artists.updateOne(queryFilter, set("title", "Gorillaz"));
+    Document updatedBand = artists.find(queryFilter).iterator().tryNext();
+    Assert.assertEquals(updatedBand.get("title"), "Gorillaz");
+    Assert.assertNotNull(updatedBand.get("num_albums"));
+  }
+```
+https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80a65cee2a48c9/mflix-java/mflix/src/test/java/mflix/lessons/UpdateOperators.java#L131-L151
 
  3. You can update multiple documents that match your query using updateMany in conjunction with set or inc operations.
 
