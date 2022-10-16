@@ -186,16 +186,10 @@ public class UpdateOperators extends AbstractLesson {
 
   @Test
   public void testUnsetFieldValue() {
-    // connect to the db and collection
     MongoCollection<Document> artists = testDb.getCollection("artists");
-    // update all documents that possess the "rating" field by unsetting
-    // that field. unset removes the field from the document.
     artists.updateMany(exists("rating"), unset("rating"));
-    // retrieve updated documents
     Document bandOneUpdated = artists.find(new Document("_id", band1Id)).iterator().tryNext();
     Document bandTwoUpdated = artists.find(new Document("_id", band2Id)).iterator().tryNext();
-    // confirm that these documents no longer contain the rating field
-    // but still contain other fields.
     Assert.assertEquals(bandOneUpdated.get("title"), "Gorillazz");
     Assert.assertEquals(bandTwoUpdated.get("title"), "Weird Al Yankovic");
     Assert.assertNotNull(bandOneUpdated.get("num_albums"));
