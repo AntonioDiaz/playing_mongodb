@@ -325,5 +325,20 @@ https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80
 * Expressive `lookup` allows us to apply aggregation pipeplines to data-before the data is joined.
 * `let` allows us to declare variables in our pipeline, referring to document fields in our source collection.
 * Compass export to language feature produces aggregation in our application's native language.
+* Join example:
+```json
+{
+  from: 'comments',
+  let: {'id': '$_id'},
+  pipeline: [
+    { '$match': 
+      { '$expr': { '$eq': ['$movie_id', '$$id'] }},
+    }, {'$count': 'count'}  
+  ],
+  as: 'movie_comments'
+}
+```
+
+
 
 <img width="950" alt="mongo_lookup" src="https://user-images.githubusercontent.com/725743/196049510-60f28540-2c74-488c-ba44-e3b3c4ba5c31.png">
