@@ -78,54 +78,23 @@ public class UpdateOperators extends AbstractLesson {
 
   @Test
   public void testReplaceDocument() {
-    // establish a connection with the db and retrieve the test collection
     MongoCollection<Document> artists = testDb.getCollection("artists");
-
-    // retrieve the band in question
     Bson queryFilter = new Document("_id", band1Id);
     Document myBand = artists.find(queryFilter).iterator().tryNext();
-
-    // make sure that this is the band that I wanted, with all the fields
-    // intact
     Assert.assertEquals(
         "Make sure that the band created in the database is"
             + " the same as the band retrieved from the database",
         bandOne,
         myBand);
-
-    // create a document with a correct band title
     Document replaceBand = new Document();
     replaceBand.append("title", "Gorillaz");
-
-    // replace the incorrectly titled document, with the correctly
-    // titled document
     artists.replaceOne(eq("_id", band1Id), replaceBand);
-
-    // retrieve the doc after the replacement is complete
     Document myNewBand = artists.find(queryFilter).iterator().tryNext();
-    // see what else changed
     Assert.assertEquals(myNewBand.get("_id"), band1Id);
     Assert.assertEquals(myNewBand.get("title"), "Gorillaz");
     Assert.assertNull(myNewBand.get("num_albums"));
     Assert.assertNull(myNewBand.get("genre"));
     Assert.assertNull(myNewBand.get("rating"));
-
-    /* It looks like this replacement operation annihilated all fields
-     * other than the _id field and the title field. This is because when
-     * the replace method is used, it replaces entire Documents, and
-     * since the replacement document that we created only had the title
-     * and _id fields we ended up losing a bunch of data, such as the
-     * number of albums, genre and rating of the band, which is unfortunate.
-     *
-     * Instead of using a method that replaces full documents we should
-     * use something that can work with better precision and change only
-     * the field that is specified. Sounds to me like we should use set.
-     *
-     * Let us take a look at an example that uses set when changing the
-     * band title.
-     *
-     */
-
   }
 
   @Test
