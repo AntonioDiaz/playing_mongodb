@@ -130,20 +130,12 @@ public class UpdateOperators extends AbstractLesson {
 
   @Test
   public void testSetFieldValueForOneDocument() {
-    // get the collection from the database
     MongoCollection<Document> artists = testDb.getCollection("artists");
     Bson queryFilter = new Document("_id", band1Id);
-    // retrieve the band in question
     Document wrongBandName = artists.find(queryFilter).iterator().tryNext();
-    // make sure that we got the right band
     Assert.assertEquals(wrongBandName.get("title"), "Gorillazz");
-    // update the field that needs changes using set and updateOne
     artists.updateOne(queryFilter, set("title", "Gorillaz"));
-    // retrieve the updated document
     Document updatedBand = artists.find(queryFilter).iterator().tryNext();
-
-    // verify that the field value was updated and all other fields still
-    // contain the data in other fields
     Assert.assertEquals(updatedBand.get("title"), "Gorillaz");
     Assert.assertNotNull(updatedBand.get("num_albums"));
     Assert.assertNotNull(updatedBand.get("genre"));
