@@ -322,8 +322,8 @@ https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80
 * Join two collections of data, e.g. movies and comments.
 * Usage new expressive '$lookup'
 * Build aggregations in Compass, and then export to language.
-* Expressive 'lookup' allows us to apply aggregation pipeplines to data-before the data is joined.
-* 'let' allows us to declare variables in our pipeline, referring to document fields in our source collection.
+* Expressive `lookup` allows us to apply aggregation pipeplines to data-before the data is joined.
+* `let` allows us to declare variables in our pipeline, referring to document fields in our source collection.
 * Compass export to language feature produces aggregation in our application's native language.
 
 <img width="950" alt="mongo_lookup" src="https://user-images.githubusercontent.com/725743/196049510-60f28540-2c74-488c-ba44-e3b3c4ba5c31.png">
