@@ -126,14 +126,10 @@ public class UpdateOperators extends AbstractLesson {
 
   @Test
   public void testSetFieldValueForManyDocument() {
-    // retrieve the collection
     MongoCollection<Document> artists = testDb.getCollection("artists");
-    // use updateMany with set
     artists.updateMany(eq("rating", 8), set("rating", 9));
-    // retrieve the updated documents
     Document bandOneUpdated = artists.find(new Document("_id", band1Id)).iterator().tryNext();
     Document bandTwoUpdated = artists.find(new Document("_id", band2Id)).iterator().tryNext();
-    // make sure that both values are updated for both bands
     Assert.assertEquals(bandOneUpdated.get("title"), "Gorillazz");
     Assert.assertEquals(bandTwoUpdated.get("title"), "Weird Al Yankovic");
     Assert.assertEquals(bandOneUpdated.get("rating"), 9);
