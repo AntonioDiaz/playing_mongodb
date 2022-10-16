@@ -326,7 +326,7 @@ https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80
 * `let` allows us to declare variables in our pipeline, referring to document fields in our source collection.
 * Compass export to language feature produces aggregation in our application's native language.
 * Join example:
-```json
+```js
 {
   from: 'comments',
   let: {'id': '$_id'},
