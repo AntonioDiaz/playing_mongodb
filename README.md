@@ -301,46 +301,18 @@ public void testWriteOneDocument() {
 ```  
 ## Updates
  1. You can replace entire documents with __replaceOne__. This operation may cause you to lose data, so it isn't recommended for situations when you need a simple update.  
-```java
-  @Test
-  public void testReplaceDocument() {
-    MongoCollection<Document> artists = testDb.getCollection("artists");
-    Bson queryFilter = new Document("_id", band1Id);
-    Document myBand = artists.find(queryFilter).iterator().tryNext();
-    Assert.assertEquals(
-        "Make sure that the band created in the database is"
-            + " the same as the band retrieved from the database",
-        bandOne,
-        myBand);
-    Document replaceBand = new Document();
-    replaceBand.append("title", "Gorillaz");
-    artists.replaceOne(eq("_id", band1Id), replaceBand);
-    Document myNewBand = artists.find(queryFilter).iterator().tryNext();
-    Assert.assertEquals(myNewBand.get("_id"), band1Id);
-    Assert.assertEquals(myNewBand.get("title"), "Gorillaz");
-    Assert.assertNull(myNewBand.get("num_albums"));
-  }
-```
+https://github.com/AntonioDiaz/playing_mongodb/blob/21ec65cdf969c2faba5855ed462e60a1a9b6b5e2/mflix-java/mflix/src/test/java/mflix/lessons/UpdateOperators.java#L79-L98
 
  2. You can update a value in a single document using the __updateOne__ and __set__ or __inc__ operators.
-```java
-  @Test
-  public void testSetFieldValueForOneDocument() {
-    MongoCollection<Document> artists = testDb.getCollection("artists");
-    Bson queryFilter = new Document("_id", band1Id);
-    Document wrongBandName = artists.find(queryFilter).iterator().tryNext();
-    Assert.assertEquals(wrongBandName.get("title"), "Gorillazz");
-    artists.updateOne(queryFilter, set("title", "Gorillaz"));
-    Document updatedBand = artists.find(queryFilter).iterator().tryNext();
-    Assert.assertEquals(updatedBand.get("title"), "Gorillaz");
-    Assert.assertNotNull(updatedBand.get("num_albums"));
-  }
-```
 https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80a65cee2a48c9/mflix-java/mflix/src/test/java/mflix/lessons/UpdateOperators.java#L131-L151
 
  3. You can update multiple documents that match your query using updateMany in conjunction with set or inc operations.
+https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80a65cee2a48c9/mflix-java/mflix/src/test/java/mflix/lessons/UpdateOperators.java#L166-L180
+
 
  4. You can completely remove a field from a document by using updateOne or updateMany with the unset operation.
+https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80a65cee2a48c9/mflix-java/mflix/src/test/java/mflix/lessons/UpdateOperators.java#L230-L249
+
 
  For more update operators and their use cases, feel free to check out the following documentation page:  
  http://mongodb.github.io/mongo-java-driver/3.8/driver/tutorials/perform-write-operations/
