@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -128,9 +129,19 @@ public class CommentDao extends AbstractMFlixDao {
         // TODO> Ticket Delete Comments - Implement the method that enables the deletion of a user
         // comment
         // TIP: make sure to match only users that own the given commentId
+
+        if (StringUtils.isEmpty(commentId)) {
+            throw new IllegalArgumentException("");
+        }
+        Comment comment = getComment(commentId);
+        if (comment==null || !comment.getEmail().equals(email)){
+            return false;
+        }
+        Bson deleteFiler = Filters.eq("_id", new ObjectId(commentId));
+        DeleteResult id = commentCollection.deleteOne(deleteFiler);
         // TODO> Ticket Handling Errors - Implement a try catch block to
         // handle a potential write exception when given a wrong commentId.
-        return false;
+        return id.getDeletedCount()>0;
     }
 
     /**

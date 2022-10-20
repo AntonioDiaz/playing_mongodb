@@ -14,6 +14,7 @@
 - [Writes](#writes)
 - [Updates](#updates)
 - [Joins](#joins)
+- [Deletes](#deletes)
 
 ## Links  
 https://www.mongodb.com/compatibility/spring-boot
@@ -343,3 +344,9 @@ https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80
 
 
 <img width="950" alt="mongo_lookup" src="https://user-images.githubusercontent.com/725743/196049510-60f28540-2c74-488c-ba44-e3b3c4ba5c31.png">
+
+## Deletes
+- Deleting data is just another write operation in the database 
+- We can delete one document at a time with `deleteOne` 
+- Or we can `deleteMany` documents in one go
+- The method `findAndDeleteOne` returns the state, the document before the delete command got executed.
