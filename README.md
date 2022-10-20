@@ -243,11 +243,11 @@ public void singleStageAggregation() {
 ```
 
 ## Writes
-- We can insert new documents using both the __insertOne__ or __insertMany__ collection methods. 
+- We can insert new documents using both the `insertOne` or `insertMany` collection methods. 
 - Update using the __$ flag set to true also allows us to insert new documents.
-- Using __$setOnInsert__ update operator provides a way to set specific fields only in the case of insert.
+- Using `$setOnInsert` update operator provides a way to set specific fields only in the case of insert.
 
-* Example __insertOne__
+* Example `insertOne`
 ```java
 @Test
 public void testWriteOneDocument() {
@@ -261,7 +261,7 @@ public void testWriteOneDocument() {
 }
 ```
 
-* Example __$setOnInsert__
+* Example `$setOnInsert`
 ```java
   @Test
   public void testUpsertDocument() {
@@ -300,18 +300,19 @@ public void testWriteOneDocument() {
     Assert.assertEquals("yes", csgoDocument.get("just_inserted"));
   }
 ```  
+
 ## Updates
- 1. You can replace entire documents with __replaceOne__. This operation may cause you to lose data, so it isn't recommended for situations when you need a simple update.  
+ 1. You can replace entire documents with `replaceOne`. This operation may cause you to lose data, so it isn't recommended for situations when you need a simple update.  
 https://github.com/AntonioDiaz/playing_mongodb/blob/21ec65cdf969c2faba5855ed462e60a1a9b6b5e2/mflix-java/mflix/src/test/java/mflix/lessons/UpdateOperators.java#L79-L98
 
- 2. You can update a value in a single document using the __updateOne__ and __set__ or __inc__ operators.
+ 2. You can update a value in a single document using the `updateOne` and __set__ or __inc__ operators.
 https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80a65cee2a48c9/mflix-java/mflix/src/test/java/mflix/lessons/UpdateOperators.java#L131-L151
 
- 3. You can update multiple documents that match your query using updateMany in conjunction with set or inc operations.
+ 3. You can update multiple documents that match your query using `updateMany` in conjunction with set or inc operations.
 https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80a65cee2a48c9/mflix-java/mflix/src/test/java/mflix/lessons/UpdateOperators.java#L166-L180
 
 
- 4. You can completely remove a field from a document by using updateOne or updateMany with the unset operation.
+ 4. You can completely remove a field from a document by using `updateOne` or `updateMany` with the `unset` operation.
 https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80a65cee2a48c9/mflix-java/mflix/src/test/java/mflix/lessons/UpdateOperators.java#L230-L249
 
 

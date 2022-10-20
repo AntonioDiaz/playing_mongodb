@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.mongodb.client.model.Updates.set;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
@@ -76,12 +77,14 @@ public class CommentDao extends AbstractMFlixDao {
      * returns the resulting Comment object.
      */
     public Comment addComment(Comment comment) {
-
-        // TODO> Ticket - Update User reviews: implement the functionality that enables adding a new
-        // comment.
+        if (comment.getId()==null) {
+            throw new IncorrectDaoOperation("");
+        }
+        // TODO> Ticket - Update User reviews: implement the functionality that enables adding a new comment.
+        commentCollection.insertOne(comment);
         // TODO> Ticket - Handling Errors: Implement a try catch block to
         // handle a potential write exception when given a wrong commentId.
-        return null;
+        return comment;
     }
 
     /**
@@ -99,11 +102,19 @@ public class CommentDao extends AbstractMFlixDao {
      */
     public boolean updateComment(String commentId, String text, String email) {
 
-        // TODO> Ticket - Update User reviews: implement the functionality that enables updating an
-        // user own comments
+        // TODO> Ticket - Update User reviews: implement the functionality that enables updating an user own comments
+        Bson commentFilterId = Filters.eq("_id", new ObjectId(commentId));
+        Comment comment = commentCollection.find(commentFilterId).iterator().tryNext();
+        if (comment==null) {
+            return false;
+        }
+        if (!comment.getEmail().equals(email)) {
+            return false;
+        }
+        commentCollection.updateOne(commentFilterId, set("text", text));
         // TODO> Ticket - Handling Errors: Implement a try catch block to
         // handle a potential write exception when given a wrong commentId.
-        return false;
+        return true;
     }
 
     /**
