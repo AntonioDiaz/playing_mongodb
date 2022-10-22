@@ -339,9 +339,10 @@ https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80
   ],
   as: 'movie_comments'
 }
-``` 
-
+```
+*  Example from Compass: 
 <img width="432" alt="mongo_lookup" src="https://user-images.githubusercontent.com/725743/197350577-6c123c31-0865-4cf1-9d96-b68f320265ca.png">
+
 
 ## Deletes
 - Deleting data is just another write operation in the database 
