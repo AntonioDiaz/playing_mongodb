@@ -15,6 +15,7 @@
 - [Updates](#updates)
 - [Joins](#joins)
 - [Deletes](#deletes)
+- [Read Concerns](#read-concerns)
 
 ## Links  
 https://www.mongodb.com/compatibility/spring-boot
@@ -339,14 +340,20 @@ https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80
   ],
   as: 'movie_comments'
 }
-```
+``` 
 
-
-
-<img width="950" alt="mongo_lookup" src="https://user-images.githubusercontent.com/725743/196049510-60f28540-2c74-488c-ba44-e3b3c4ba5c31.png">
+<img width="432" alt="mongo_lookup" src="https://user-images.githubusercontent.com/725743/197350577-6c123c31-0865-4cf1-9d96-b68f320265ca.png">
 
 ## Deletes
 - Deleting data is just another write operation in the database 
 - We can delete one document at a time with `deleteOne` 
 - Or we can `deleteMany` documents in one go
 - The method `findAndDeleteOne` returns the state, the document before the delete command got executed.
+
+## Read Concerns
+  * Represents different levels or `read isolation`
+    * __Low lever of read isolation__: when data can be read by clients before that data has been replicated to a majority of nodes.
+  * Can be used to specify a consistenct view of the database
+
+<img width="1434" alt="mongo_read_concerns_01" src="https://user-images.githubusercontent.com/725743/197350574-815e441a-6db0-47bf-a3a4-99c07ab65d75.png">
+
