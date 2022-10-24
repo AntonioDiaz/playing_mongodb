@@ -3,6 +3,7 @@ package mflix.api.daos;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoWriteException;
 import com.mongodb.ReadConcern;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Aggregates;
@@ -26,9 +27,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.mongodb.client.model.Updates.set;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -40,6 +39,7 @@ public class CommentDao extends AbstractMFlixDao {
     public static String COMMENT_COLLECTION = "comments";
     private final Logger log;
     private MongoCollection<Comment> commentCollection;
+    private MongoCollection<Document> commentCollectionAux;
     private CodecRegistry pojoCodecRegistry;
 
     @Autowired
@@ -54,6 +54,7 @@ public class CommentDao extends AbstractMFlixDao {
                         fromProviders(PojoCodecProvider.builder().automatic(true).build()));
         this.commentCollection =
                 db.getCollection(COMMENT_COLLECTION, Comment.class).withCodecRegistry(pojoCodecRegistry);
+        commentCollectionAux = db.getCollection(COMMENT_COLLECTION);
     }
 
     /**
@@ -126,10 +127,6 @@ public class CommentDao extends AbstractMFlixDao {
      * @return true if successful deletes the comment.
      */
     public boolean deleteComment(String commentId, String email) {
-        // TODO> Ticket Delete Comments - Implement the method that enables the deletion of a user
-        // comment
-        // TIP: make sure to match only users that own the given commentId
-
         if (StringUtils.isEmpty(commentId)) {
             throw new IllegalArgumentException("");
         }
@@ -153,12 +150,28 @@ public class CommentDao extends AbstractMFlixDao {
      */
     public List<Critic> mostActiveCommenters() {
         List<Critic> mostActive = new ArrayList<>();
+
+        List<Document> documents = Arrays.asList(new Document("$group",
+                        new Document("_id", "$email")
+                                .append("count",
+                                        new Document("$count",
+                                                new Document()))),
+                new Document("$sort",
+                        new Document("count", -1L)),
+                new Document("$limit", 20L));
+        List<Document> documentsList = new ArrayList<>();
+        commentCollectionAux.withReadConcern(ReadConcern.MAJORITY).aggregate(documents).into(documentsList);
+        for (Document comment : documentsList) {
+            mostActive.add(new Critic(comment.getString("_id"), comment.getInteger("count")));
+        }
         // // TODO> Ticket: User Report - execute a command that returns the
         // // list of 20 users, group by number of comments. Don't forget,
         // // this report is expected to be produced with an high durability
         // // guarantee for the returned documents. Once a commenter is in the
         // // top 20 of users, they become a Critic, so mostActive is composed of
         // // Critic objects.
+
+
         return mostActive;
     }
 }

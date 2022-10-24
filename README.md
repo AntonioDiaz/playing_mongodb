@@ -15,6 +15,7 @@
 - [Joins](#joins)
 - [Deletes](#deletes)
 - [Read Concerns](#read-concerns)
+- [Bulk Writes](#bulk-writes)
 
 ## Links  
 https://www.mongodb.com/compatibility/spring-boot
@@ -355,8 +356,22 @@ https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80
     * __Low lever of read isolation__: when data can be read by clients before that data has been replicated to a majority of nodes.
   * Can be used to specify a consistenct view of the database
   * `local` defaul read concern. This does not check that data has been replicated
-  <img width="1434" alt="mongo_read_concerns_01" src="https://user-images.githubusercontent.com/725743/197350574-815e441a-6db0-47bf-a3a4-99c07ab65d75.png">
+  <img width="1434" alt="mongo_read_concerns_01" src="https://user-images.githubusercontent.com/725743/197350574-815e441a-6db0-47bf-a3a4-99c07ab65d75.png">  
+
   * `majority` alows more durable reads, this only return data that has been replicated to a majory of nodes, provides high level of read isolations but my provide stale data.
   <img width="1463" alt="mongo_read_concerns_02" src="https://user-images.githubusercontent.com/725743/197352073-0d9297f2-0f74-4e3f-91b3-ff481095a621.png"> 
 
+
+## Bulk Writes
+* Bulk writes allow dataase clients to send multiple writes.
+* Can either be ordered or unordered or paralel.
+* Ordered Bulk Write:
+  * The default setting for buld writes in MongoDB.
+  * Executes writes sequentially:
+    * Will end execution after first write failure.
+* Unordered Bulk Write:
+  * Has to be specified with the flag: `{ ordered: false }`
+  * Executes writes in parallel
+
+![mongodb_bulk_write](https://user-images.githubusercontent.com/725743/197458118-c45258fe-ef92-44d2-adc8-9c919427176c.png)
 
