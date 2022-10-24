@@ -151,6 +151,9 @@ public class CommentDao extends AbstractMFlixDao {
     public List<Critic> mostActiveCommenters() {
         List<Critic> mostActive = new ArrayList<>();
 
+
+        //Aggregates.group("$group", Aggregates.count());
+
         List<Document> documents = Arrays.asList(new Document("$group",
                         new Document("_id", "$email")
                                 .append("count",
