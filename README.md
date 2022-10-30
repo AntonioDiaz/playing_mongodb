@@ -33,6 +33,7 @@ https://university.mongodb.com/courses/M220J/about
   * MongoCollection
   * Document
   * Bson
+
 * Document 
   ```java
   public class Document implements Map<String, Object>, Serializable, Bson {...}
@@ -57,7 +58,6 @@ Document newResult =
         .iterator()
         .tryNext();
 ```
-
 
 ## Basic Reads
 * Using Pojo
