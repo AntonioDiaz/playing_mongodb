@@ -16,6 +16,10 @@
 - [Deletes](#deletes)
 - [Read Concerns](#read-concerns)
 - [Bulk Writes](#bulk-writes)
+- [Resilenciy](#resilenciy)
+  - [Connection Pooling](#connection-pooling)
+  - [Robust Client Configuration](#robust-client-configuration)
+  - [Principle of Least Privilege](#principle-of-least-privilege)
 
 ## Links  
 https://www.mongodb.com/compatibility/spring-boot
@@ -375,3 +379,22 @@ https://github.com/AntonioDiaz/playing_mongodb/blob/c64737256070b448b9cc87a82a80
 
 ![mongodb_bulk_write](https://user-images.githubusercontent.com/725743/197458118-c45258fe-ef92-44d2-adc8-9c919427176c.png)
 
+## Resilenciy
+### Connection Pooling
+* Connection pools allow for reuse of connections
+* Subsequent request appear faster to the client
+* Default size of 100
+
+### Robust Client Configuration
+* Always use connection pooling.
+* Always specify a `wtimeout` with majority writes.
+* Always configure for and handle `serverSelectionTimeout` errors.
+
+### Principle of Least Privilege
+* Engineer systems with the principle of least privilege in mind
+* Consider what kinds of users and what permission they will have
+  * Application users that log into the application itself
+  * Data users
+    * Administrative database users that can create indexes, import data and so on.
+    * Application database users that only have privileges they require.
+  

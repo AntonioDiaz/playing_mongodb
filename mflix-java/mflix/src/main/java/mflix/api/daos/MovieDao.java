@@ -49,7 +49,11 @@ public class MovieDao extends AbstractMFlixDao {
         //TODO> Ticket: Handling Errors - implement a way to catch a
         //any potential exceptions thrown while validating a movie id.
         //Check out this method's use in the method that follows.
-        return true;
+        try {
+            return movieId.matches("[0-9A-Fa-f]+");
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
